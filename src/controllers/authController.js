@@ -2,6 +2,7 @@ const router = require('express').Router();
 
 const authService = require('../services/authService');
 const { SESSION_NAME } = require('../config/constants');
+const { isAuth } = require('../middleware/authMiddleware');
 
 router.get('/register', function(req, res) {
     res.render('auth/register');
@@ -50,7 +51,7 @@ router.post('/login', async function(req, res){
     
 });
 
-router.get('/logout', function(req, res){
+router.get('/logout', isAuth, function(req, res){
     res.clearCookie(SESSION_NAME);
     res.redirect('/');
 }); 

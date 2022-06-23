@@ -1,12 +1,14 @@
 const router = require('express').Router();
 
+const { isAuth } = require('../middleware/authMiddleware');
+const { preloadPublication, isPublicationAuthor } = require('../middleware/houseMiddleware');
 const houseService = require('../services/houseService');
 
-router.get('/create', function (req, res) {
+router.get('/create', isAuth, function (req, res) {
     res.render('house/create');
 });
 
-router.post('/create', async function (req, res) {
+router.post('/create', isAuth, async function (req, res) {
     let houseData = req.body;
 
     houseData.owner = req.user._id;
@@ -33,10 +35,8 @@ router.get('/:houseId/details', async function (req, res) {
     res.render('house/details', { house, isOwner });
 });
 
-router.get('/:houseId/edit', async function (req, res) {
-    const houseData = await houseService.getById(req.params.houseId).lean();
-
-    res.render('house/edit', { houseData });
+router.get('/:houseId/edit', isAuth, preloadPublication, isPublicationAuthor, async function (req, res) {
+    res.render('house/edit', { ...req.publication });
 });
 
 router.post('/:houseId/edit', async function (req, res) {
@@ -49,7 +49,7 @@ router.post('/:houseId/edit', async function (req, res) {
 
         res.redirect(`/house/${req.params.houseId}/details`);
     } catch (err) {
-        res.status(401).render('house/edit', { houseData, error: err.message });
+        res.status(401).render('house/edit', { ...houseData, error: err.message });
     }
 
 });
