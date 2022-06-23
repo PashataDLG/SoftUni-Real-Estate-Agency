@@ -34,7 +34,6 @@ router.get('/login', function(req, res){
 
 router.post('/login', async function(req, res){
     const { username, password } = req.body;
-    console.log(req.body);
     try {
         let token = await authService.login(username, password);
 
