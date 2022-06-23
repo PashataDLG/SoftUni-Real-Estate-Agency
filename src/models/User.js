@@ -5,15 +5,21 @@ const { SALT_ROUNDS } = require('../config/constants');
 const userSchema = new mongoose.Schema({
     fullName: {
         type: String,
-        required: true
+        required: true,
+        validate: {
+            validator: /^[A-Za-z]+ [A-Za-z]+/g,
+            message: 'The full name should be in the following format: "Vince McMahon"'
+        }
     },
     username: {
         type: String,
-        required: true,
+        required: [true, 'Password is required'],
+        minLength: 5,
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        minLength: 4,
     },
 });
 
