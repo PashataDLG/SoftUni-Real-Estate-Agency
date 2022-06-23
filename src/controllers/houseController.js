@@ -54,4 +54,10 @@ router.post('/:houseId/edit', async function (req, res) {
 
 });
 
+router.get('/:houseId/delete', async function (req, res) {
+    await houseService.deleteHouse(req.params.houseId);
+
+    res.redirect('/house/for-rent');
+});
+
 module.exports = router;

@@ -7,3 +7,5 @@ exports.getAll = () => Housing.find();
 exports.getById = (houseId) => Housing.findOne({ _id: houseId });
 
 exports.updateHouse = (houseId, houseData) => Housing.findByIdAndUpdate(houseId, houseData);
+
+exports.deleteHouse = (houseId) => Housing.findByIdAndDelete(houseId);
