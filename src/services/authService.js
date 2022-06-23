@@ -4,14 +4,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { SECRET } = require('../config/constants');
 
-exports.register = async (username, password, repeatPassword) => {
-    if(User.findOne({ username })){
-        throw{
-            message: 'This username is taken'
-        }
-    }
-
-    const createdUser = await User.create({ username, password, repeatPassword });
+exports.register = async (fullName, username, password, repeatPassword) => {
+    const createdUser = await User.create({ fullName, username, password, repeatPassword });
 
     return createdUser; 
 };

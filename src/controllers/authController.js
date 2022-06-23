@@ -8,10 +8,10 @@ router.get('/register', function(req, res) {
 });
 
 router.post('/register', async function(req, res){
-    let { username, password, repeatPassword } = req.body;
+    let { fullName, username, password, repeatPassword } = req.body;
 
     try {
-        await authService.register(username, password, repeatPassword);
+        await authService.register(fullName, username, password, repeatPassword);
         
         const token = await authService.login(username, password);
 
@@ -23,16 +23,18 @@ router.post('/register', async function(req, res){
         res.redirect('/');
 
     } catch (err) {
+        console.log(err);
         res.status(404).render('auth/register', {error: err.message});
     }
 });
 
 router.get('/login', function(req, res){
-    res.render('login');
+    res.render('auth/login');
 });
 
 router.post('/login', async function(req, res){
     const { username, password } = req.body;
+    console.log(req.body);
     try {
         let token = await authService.login(username, password);
 
