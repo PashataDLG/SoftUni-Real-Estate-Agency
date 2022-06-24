@@ -28,16 +28,31 @@ router.get('/for-rent', async function (req, res) {
 });
 
 router.get('/:houseId/details', async function (req, res) {
-    const house = await houseService.getById(req.params.houseId).lean();
+    const house = await houseService.getByIdDetailed(req.params.houseId).lean();
 
     const isOwner = house.owner == req.user?._id;
 
-    res.render('house/details', { house, isOwner });
+    let isRented = false;
+
+    let currentTenants = house.rentedHome.map(tenant => tenant.fullName).join(', ');
+
+    house.rentedHome.forEach(user => {
+        if(req.user?._id == user._id) {
+            isRented = true;
+        }
+    });
+
+    res.render('house/details', { house, isOwner, isRented, currentTenants });
 });
 
-router.get('/:houseId/edit', isAuth, preloadPublication, isPublicationAuthor, async function (req, res) {
-    res.render('house/edit', { ...req.publication });
-});
+router.get('/:houseId/edit',
+    isAuth,
+    preloadPublication,
+    isPublicationAuthor,
+    async function (req, res) {
+        res.render('house/edit', { ...req.publication });
+    }
+);
 
 router.post('/:houseId/edit', async function (req, res) {
     let houseData = req.body;
@@ -52,6 +67,19 @@ router.post('/:houseId/edit', async function (req, res) {
         res.status(401).render('house/edit', { ...houseData, error: err.message });
     }
 
+});
+
+router.get('/:houseId/rent', async function (req, res) {
+    let house = await houseService.getById(req.params.houseId);
+
+    house.rentedHome.push(req.user._id);
+    house.pieces -= 1;
+
+    console.log(house);
+
+    await house.save();
+
+    res.redirect(`/house/${req.params.houseId}/details`);
 });
 
 router.get('/:houseId/delete', async function (req, res) {

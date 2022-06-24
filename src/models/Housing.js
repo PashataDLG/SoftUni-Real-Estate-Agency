@@ -29,10 +29,10 @@ const housingSchema = new mongoose.Schema({
     homeImg: {
         type: String,
         require: true,
-        validate: {
-            validator: /^http?/g,
-            message: 'The image URL must start with http/s!'
-        }
+        // validate: {
+        //     validator: /^http?/g,
+        //     message: 'The image URL must start with http/s!'
+        // }
     },
     description: {
         type: String,
