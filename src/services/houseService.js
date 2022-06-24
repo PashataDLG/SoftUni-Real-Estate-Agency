@@ -11,3 +11,5 @@ exports.getByIdDetailed = (houseId) => Housing.findOne({ _id: houseId }).populat
 exports.updateHouse = (houseId, houseData) => Housing.findByIdAndUpdate(houseId, houseData);
 
 exports.deleteHouse = (houseId) => Housing.findByIdAndDelete(houseId);
+
+exports.searchForHouse = (searchInput) => Housing.find({ type: searchInput });
